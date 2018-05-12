@@ -35,7 +35,7 @@ public:
     
      /** 
      * std::unique_ptr and std::share_ptr are only
-     * usable with classes that don't provide public destructors.
+     * usable with classes that provide public destructors.
     */
     ~SPSingleton() = default;    // Same as ~SPSingleton(){};
 
