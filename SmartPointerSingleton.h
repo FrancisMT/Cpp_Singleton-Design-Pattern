@@ -2,8 +2,6 @@
 #include<memory>
 #include<mutex>
 
-std::once_flag testflag; 
-
 /** Thread-safe singleton using:
  * 
  * Smart Pointers;
