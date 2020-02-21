@@ -1,7 +1,9 @@
-#include<iostream>
+#include <iostream>
 
-#include"LocalStaticSingleton.h"
-#include"SmartPointerSingleton.h"
+#include "LocalStaticSingleton.h"
+#include "RawPointerSingleton.h"
+#include "UniquePointerSingleton.h"
+#include "SharedPointerSingleton.h"
 
 int main() {
 
@@ -35,7 +37,7 @@ int main() {
     }
     puts("\n*****************************\n");
     {
-        // Getting a copy a shared_ptr
+        // Getting a copy of a shared_ptr
         auto SPSingletonInstance = SPSingleton::GetInstance();
         SPSingletonInstance->setX(42);
         std::cout << SPSingletonInstance->getX() << '\n';
