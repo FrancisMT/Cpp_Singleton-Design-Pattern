@@ -1,74 +1,72 @@
+#pragma once
+
 #include<iostream>
-#include<mutex>
 
-/** Creating a singleton with local statics and a mutex.
+/** Singleton using a local static variable.
  * 
- * A mutex is used to ensure that the singleton will be
- * thread safe initialized.
+ * This is the standard approach when creating a singleton.
 */
-class LSSingeton {
-
+class LSSingleton {
 public:
+    
+    inline static LSSingleton& GetInstance() { 
 
-    inline void IsNum42(const int Number) {
-        (Number == 42)  ?
-        std::cout << "Yes" << std::endl : 
-        std::cout << "No" << std::endl  ;
-    }
-
-    inline static LSSingeton& GetInstance() {
-     
-        if(!IsInstanceValid()) {
-            std::cout << "Initializing Singleton" << std::endl;
-            
-            std::lock_guard<std::mutex> InitLock(InitMutex);
-            Instance = new LSSingeton();
+        //Just for demonstration purposes.
+        if(static bool bIsSingletonInstanceInitialized{false}; !bIsSingletonInstanceInitialized){
+            std::cout << "Initializing LSSingleton" << '\n';
+            bIsSingletonInstanceInitialized = !bIsSingletonInstanceInitialized;
         }
 
-        std::cout << "Getting Singleton Instance" << std::endl;
-        return *Instance;
-    }
+        static LSSingleton Instance;
 
-    inline static bool IsInstanceValid() {
-        return (Instance != nullptr);
+        std::cout << "Getting LSSingleton Instance" << '\n';
+        return Instance;
     }
-
-    inline static void ResetInstance() {
-        delete Instance;    // Works even if the pointer is null.
-        Instance = nullptr; // So that "GetInstance()"" still works.
-   }
 
     /**
-     * Make sure the copy constructor and the assignment operator
-     * are not implemented. 
-     * We don't want accidental copies of the singleton.
-     * 
-     * Side note: 
-     * deleted functions should be public 
-     * as it results in better error messages 
-     * due to the compilers behavior to check accessibility
-     * before deleted status.
+     * Getter & Setter
     */
-    LSSingeton(LSSingeton const&) = delete;
-    LSSingeton operator=(LSSingeton const&) = delete;
+    inline void setX(int val){x = val;}
+    inline int getX() const {return x;}
 
 private:
+    
+    /** 
+     * Constructor
+    */
+    LSSingleton() : x{9001} {std::cout << "LSSingleton constructor" << '\n';};
 
-    /** 
-     * We don't want another singleton to be constructed.
+
+    /**
+     * Destructor    
     */
-    LSSingeton() = default;     // Same as LSSingleton(){};
-    
-    /** 
-     * We don't want our singleton to be accidentally destroyed.
-     * 
-     * It will get torn down and be deallocated when the program terminates.
+    ~LSSingleton() {std::cout << "LSSingleton destructor" << '\n';}
+
+
+    /**
+     * Aggregate Constructor    
     */
-    ~LSSingeton() = default;    // Same as ~LSSingleton(){};
-    
-    static LSSingeton* Instance;
-    static std::mutex InitMutex;
-    
+    LSSingleton(std::initializer_list<int> il) = delete;
+
+    /**
+     * Copy Constructor    
+    */
+    LSSingleton(const LSSingleton& LSSingletonToCopy) = delete;
+
+    /**
+     * Move Constructor    
+    */
+    LSSingleton(LSSingleton&& LSSingletonToMove) = delete;
+
+    /**
+     * Copy Assignment Operator
+    */
+    LSSingleton& operator=(const LSSingleton& LSSingletonToCopy) = delete;
+
+    /**
+     * Move Assignment Operator
+    */
+    LSSingleton& operator=(LSSingleton&& LSSingletonToMove) = delete;
+
+    int x;
 };
-LSSingeton* LSSingeton::Instance = nullptr;
-std::mutex LSSingeton::InitMutex{};
